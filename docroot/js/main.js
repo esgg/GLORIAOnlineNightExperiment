@@ -8,6 +8,7 @@ function InitDevices(GloriaAPI, $scope){
 		console.log($scope.password); 
 		GloriaAPI.executeOperation(167,'get_filters', function(success){
 			GetFilters(GloriaAPI, $scope, 167);
+			$("#load_init").remove();
 		}, function(error){
 			alert(error);
 		});
@@ -49,12 +50,12 @@ function StartExposure(GloriaAPI, Sequence, data){
 					expTimer = setInterval(function(){exposureTimer(GloriaAPI, data);},2000);
 				}
 			}, function(error){
-				
+				$("#expose_0_button").prop("disabled",false);
 			});
 				
 				
 			}, function(error){
-				
+				$("#expose_0_button").prop("disabled",false);
 			});
 	});
 }
@@ -64,7 +65,7 @@ function SetCCDAttributes(GloriaAPI, Sequence, data){
 		return GloriaAPI.executeOperation(data.reservation,'set_ccd_attributes',function(success){
 				
 			}, function(error){
-				
+				$("#expose_0_button").prop("disabled",false);
 			});
 	});
 }
@@ -75,7 +76,7 @@ function SetExposureTime(GloriaAPI, Sequence, data){
 		return GloriaAPI.setParameterTreeValue(data.reservation,'cameras','ccd.images.[0].exposure',parseFloat(data.exposure_time),function(success){
 				
 			}, function(error){
-				
+				$("#expose_0_button").prop("disabled",false);
 			});
 	});
 }
@@ -100,6 +101,9 @@ function CcdDevice(GloriaAPI, Sequence, $scope){
 //			next : "#foo1_next"
 //		});
 		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
+			$("#expose_0_button").prop("disabled",true);
+			$("#loading").css("visibility","visible");
+			$scope.status_main_ccd = "EXPOSING";
 			console.log("start exposition");
 			SetExposureTime(GloriaAPI, Sequence, $scope);
 			console.log("start exposition");
@@ -147,25 +151,41 @@ function exposureTimer(GloriaAPI, $scope){
 		GloriaAPI.getParameterTreeValue($scope.reservation,'cameras','ccd.images.[0].inst',function(success){
 			alert("URL:"+success.jpg);
 			if (success.jpg!=null){
+				var mImage = new Image();
+				mImage.src = success.jpg;
+				mImage.onload = function(e){
+					var yFactor = mImage.height/480;
+					var imageWidth = mImage.width/yFactor;
+					var shift = (480-imageWidth)/2;
+					$("#image_0").attr("src",success.jpg);
+					$("#image_0").load(function (e){
+						$("#main_image_container").css("margin-left",shift);
+						$("#loading").css("visibility","hidden");
+						$("#expose_0_button").prop("disabled",false);
+					});
+				};
 				$scope.status_main_ccd = "IMAGE TAKEN";
-				$("#image_0").attr("src",success.jpg);
-				$("<img src=\""+success.jpg+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo1");
+				$("<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo1");
 				console.log("Deleting timer");
 				clearInterval(expTimer);
+				
+				
 				$("#foo1").carouFredSel({
-				circular: false,
-				infinity: false,
-				auto : false,
-				items: 4,
-				prev : "#foo1_prev",
-				next : "#foo1_next"
-			});
+					circular: false,
+					infinity: false,
+					auto : false,
+					items: 4,
+					height:80,
+					prev : "#foo1_prev",
+					next : "#foo1_next"
+				});
 			}
 		}, function(error){
-			
+			$("#expose_0_button").prop("disabled",false);
 		});
 	}, function(error){
 		alert(error);
+		$("#expose_0_button").prop("disabled",false);
 	});
 }
 
