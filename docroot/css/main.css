@@ -1,0 +1,204 @@
+#main_image {
+	margin-top: -310px;
+	margin-left: 270px;
+	height: 480px; 
+	width: 480px; 
+	border-radius:240px;
+	border:1px solid white;
+	overflow:hidden;
+}
+#mount_target{
+	position:relative;
+	top: 10px
+} 
+#mount_target_parameters{
+	position:relative;
+	top: 4px;
+	left: 10px
+}
+#mount_buttons_panel{
+	position:relative;
+	top: 5px;
+	left:60px
+	
+}
+#mount_target{
+	position:relative;
+	top: 295px;
+	left: 785px 
+} 
+#main_ccd_panel{
+	position:relative;
+	top: 15px;
+}
+#main_ccd_parameters{
+	position:relative;
+	top: 2px;
+	left: 10px
+}
+#right_controls{
+	position:relative;
+	top: 150px;
+	left: 785px 
+}
+#left_controls{
+	position:relative;
+	top:300px;
+	left:140px;
+}
+
+#main_ccd_buttons_panel{
+ 	position:relative;
+	left:45px
+}
+.title{
+	color:#CC0033;
+	font-size: 0.75em;
+}
+.regular{
+	color:#FFFFFF;
+	font-size: 0.75em;
+}
+p {
+   margin-top: 0.1em;
+   margin-bottom: 0.5em;
+}
+.selector{
+	border-radius:4px;
+	border:1px solid #FFFFFF;
+	width: 60px;
+	height:15px;
+	font-size:11px;
+	padding-top:0px;
+	padding-bottom:0px;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.input_text{
+	background-color:#000000;
+	color: #FFFFFF;
+	border:1px solid #FFFFFF;
+	width: 60px;
+	height:12px;
+	padding-bottom:0px;
+	font-size:0.75em;
+	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;   
+}
+.status_text{
+	color:#FFFFFF;
+	font-size:0.8em;
+	text-align:center;
+}
+.button_style{
+	border-radius:4px;
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-right:5px;
+	padding-left:5px;
+ }
+ .button_text{
+	font-size:0.7em;
+ }
+ .surveillance_panel{
+ 	position:absolute;
+ 	overflow:hidden;
+ 	clip:rect(0px,32px,200px,10px);
+ }
+.ui-autocomplete {
+max-height: 100px;
+overflow-y: auto;
+/* prevent horizontal scrollbar */
+overflow-x: hidden;
+}
+/* IE 6 doesn't support max-height
+* we use height instead, but this forces the menu to always be this tall
+*/
+* html .ui-autocomplete {
+height: 100px;
+}
+
+.image-scroller {
+  height: 640px;
+  -moz-user-select: none;
+  overflow: hidden;
+  position: relative;
+  -webkit-user-select: none;
+  width: 32px;
+}
+.image-scroller img {
+  display: block;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.expand{
+	position:relative;
+	margin-bottom:10px;
+}
+.positioner{
+	position:absolute;
+	
+}
+.slide{
+	display:block;
+	border:0;
+	text-decoration:none;
+	float:left;
+	border-right:1px solid #fff;	
+}
+.slide img{
+	display:block;
+	border:0;
+	width:100px;
+	height:50px;
+	cursor:pointer;
+	-webkit-transition-duration:1s;
+	-moz-transition-duration:1s;
+	-o-transition-duration:1s;
+	transition-duration:1s;
+}
+.slide:hover img{
+	width:480px;
+	height:320px;
+}
+.status{
+	width:100px;
+}
+.image_carousel {
+	padding: 15px 0 15px 40px;
+	position: relative;
+	top:-100px;
+	width:750px;
+}
+.image_carousel img {
+	border: 1px solid #ccc;
+	background-color: white;
+	margin: 7px;
+	display: block;
+	float: left;
+}
+a.prev, a.next {
+	background: url(../images/miscellaneous_sprite.png) no-repeat transparent;
+	width: 45px;
+	height: 50px;
+	display: block;
+	position: absolute;
+	top: 85px;
+}
+a.prev {			left: -22px;
+					background-position: 0 0; }
+a.prev:hover {		background-position: 0 -50px; }
+a.next {			right: -22px;
+					background-position: -50px 0; }
+a.next:hover {		background-position: -50px -50px; }
+
+a.prev span, a.next span {
+	display: none;
+}
+.clearfix {
+	float: none;
+	clear: both;
+}

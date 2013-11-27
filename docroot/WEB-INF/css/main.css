@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+#content_up
+{
+background:#000;
+width:450px;
+}
+#content_up div
+{
+float:left;
+border:2px solid #FF0100;
+background:#fff;
+width:120px;
+margin:10px;
+}
