@@ -65,7 +65,10 @@ $(function() {
 	User user = themeDisplay.getUser();
 %>
 
-<div id="container" ng-app="gloria" ng-controller="InitDevices">
+<div id="load_init" style="background-color:#000000;opacity:0.8;height:100%;width:100%;position:absolute;z-index:700">
+	<img src="<%=request.getContextPath()%>/images/init_loading.gif" /> Loading
+</div>
+<div id="container" ng-app="gloria" ng-controller="InitDevices" >
 	
 	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=167">
 	</div>
@@ -81,9 +84,10 @@ $(function() {
 			</div>
 		</div>
 		<div id="right_controls">
-			<div>
-				<span class="title">MOUNT</span>
+			
+				
 				<div id="mount_target_parameters">
+					<span class="title">MOUNT</span>
 					<div>
 						<span class="regular">RA:&nbsp;&nbsp;&nbsp;&nbsp;</span>
 						<input id="coords_ra" class="input_text" size="6"></input>
@@ -105,7 +109,7 @@ $(function() {
 						<button class="button_style"><span class="button_text">GO</span></button>
 					</div>				
 				</div>
-			</div>
+			
 			<div id="main_ccd_panel">
 				<span class="title">MAIN CCD</span>
 				<div id="main_ccd_parameters" ng-controller="CcdDevice">
@@ -133,13 +137,18 @@ $(function() {
 						<span class="status_text">{{status_main_ccd}}</span>
 					</div>
 					<div id="main_ccd_buttons_panel">
-						<button class="button_style" ng-click="expose()"><span class="button_text">START</span></button>
+						<button id="expose_0_button"class="button_style" ng-click="expose()"><span class="button_text">START</span></button>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div id="main_image">
-			<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="500px" width="500px"/>
+			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
+				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
+			</div>
+			<div id="main_image_container" style="margin-left:0px;">
+				<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"/>
+			</div>
 		</div> 
 	</div>
 	<div class="image_carousel">
