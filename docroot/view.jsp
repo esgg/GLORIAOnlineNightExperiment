@@ -32,6 +32,7 @@
  <script src="http://cdn.alloyui.com/2.0.0/aui/aui-min.js"></script>
 <link rel="stylesheet"
 	href="<%= request.getContextPath()%>/css/main.css" />
+<link rel="stylesheet" type="text/css" media="all" href="<%= request.getContextPath()%>/js/prettyphoto/css/prettyPhoto.css">
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 <!-- 
@@ -41,6 +42,7 @@
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/gloriapi.js"></script>
 <script src="<%=request.getContextPath()%>/js/main.js"></script>
+<script src="<%=request.getContextPath()%>/js/prettyphoto/js/jquery.prettyPhoto.js"></script>
 <script src="<%=request.getContextPath()%>/js/jquery.carouFredSel-6.2.1.js"></script>
 
 <script
@@ -194,12 +196,37 @@ $(function() {
 		</div> 
 	</div>
 	<div class="image_carousel">
-		<div id="foo1">
-			<!-- <img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="80px" width="80px"/>
-			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="80px" width="80px"/>
-			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="80px" width="80px"/>
-			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="80px" width="80px"/>
-			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" height="80px" width="80px"/>
+		<div id="foo2">
+	<!-- 
+		 <a rel="prettyPhoto[caroufredsel]" href="http://altamira.asu.cas.cz:8080/RTIDBRepository/FileServlet?uuid=000000070000000120131128000001429fdc95bdv001&format=JPG">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+		 </a>	
+		
+		
+		 <a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"  width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"  width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"  width="80px"/>
+			
+			</a><a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+			</a>
+			<a rel="prettyPhoto[caroufredsel]" href="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg">
+			<img src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg" width="80px"/>
+			</a>  
 			 -->
 		</div>
 		<div class="clearfix"></div>
@@ -208,15 +235,37 @@ $(function() {
 	</div>
 </div>
 <script>
-$("#foo1").carouFredSel({
+$("#foo2").carouFredSel({
 	circular: false,
 	infinity: false,
 	auto : false,
 	responsive:true,
-	items: 4,
+	align:"center",
+	items: 5,
+	height:"auto",
 	prev : "#foo1_prev",
 	next : "#foo1_next"
 });
+/*$("#foo2 a").prettyPhoto({
+	theme: "facebook",
+	changepicturecallback: function() {
+		$("#foo2").trigger("pause");
+	},
+	callback: function() {
+		$("#foo2").trigger("play");
+	}
+});*/
+/*$("#foo1").carouFredSel({
+	circular: false,
+	infinity: false,
+	auto : false,
+	responsive:true,
+	align:"center",
+	items: 5,
+	height:"auto",
+	prev : "#foo1_prev",
+	next : "#foo1_next"
+});*/
 $("#coords_ra").keyup('keyup', function(e){
 	var text = $(this).val();
 	if(text==""){

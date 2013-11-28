@@ -198,19 +198,34 @@ function exposureTimer(GloriaAPI, $scope){
 					});
 				};
 				$scope.status_main_ccd = "IMAGE TAKEN";
-				$("<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo1");
+				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\">";
+				htmlCode = htmlCode + "<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/></a>";
+				$(htmlCode).appendTo("#foo2");
+				//$("<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo2");
+				//$(" <a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\"<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/></a>").appendTo("#foo2");
 				console.log("Deleting timer");
 				clearInterval(expTimer);
 				
 				
-				$("#foo1").carouFredSel({
+				$("#foo2").carouFredSel({
 					circular: false,
 					infinity: false,
 					auto : false,
-					items: 4,
-					height:80,
+					responsive:true,
+					align:"center",
+					items: 5,
+					height:"auto",
 					prev : "#foo1_prev",
 					next : "#foo1_next"
+				});
+				$("#foo2 a").prettyPhoto({
+					theme: "facebook",
+					changepicturecallback: function() {
+						$("#foo2").trigger("pause");
+					},
+					callback: function() {
+						$("#foo2").trigger("play");
+					}
 				});
 			}
 		}, function(error){
