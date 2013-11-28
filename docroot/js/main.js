@@ -9,8 +9,13 @@ function InitDevices(GloriaAPI, $scope){
 		GloriaAPI.executeOperation(167,'get_filters', function(success){
 			GetFilters(GloriaAPI, $scope, 167);
 			$("#load_init").remove();
-		}, function(error){
-			alert(error);
+		}, function(dataError, statusError){
+			if(statusError == 401){
+				$("#loading_message").text("You are not authenticated in the system");		
+			} else {
+				alert("Unknown Error");
+			}
+
 		});
 		GloriaAPI.executeOperation(167,'get_ccd_attributes', function(success){
 			
@@ -79,6 +84,34 @@ function SetExposureTime(GloriaAPI, Sequence, data){
 				$("#expose_0_button").prop("disabled",false);
 			});
 	});
+}
+
+function MountDevice(GloriaAPI, Sequence, $scope){
+	
+	$scope.go = function(){
+		console.log($scope.ra);
+		var raRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
+		var decRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
+		var ra_value = $("#coords_ra").val();
+		var dec_value = $("#coords_dec").val();
+		
+		if ($("#tags").val() == ""){	//Check if this field is empty
+			if ((ra_value.match(raRegularExpr)) && (ra_value>=0) && (ra_value<360)){
+					if ((dec_value.match(decRegularExpr) && (dec_value>=-90) && (dec_value<=90))){
+						//Execute go operation
+						alert("Go");
+					} else {
+						alert("Wrong dec value (MIN:-90, MAX:90)");
+					}
+			}  else {
+				alert("Wrong ra value (MIN:0, MAX:360 not incluided)");
+			}	
+		} else {
+			//Execute go operation
+			alert("Go");
+		}
+		
+	};
 }
 
 function CcdDevice(GloriaAPI, Sequence, $scope){
