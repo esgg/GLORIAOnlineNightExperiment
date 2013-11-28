@@ -21,6 +21,8 @@
 <%@ page import="com.liferay.portal.theme.ThemeDisplay"%>
 <%@ page import="com.liferay.portal.kernel.util.WebKeys"%>
 <%@ page import="com.liferay.portal.model.User"%>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.ResourceBundle" %>
 
 <!-- 
 <link rel="stylesheet"
@@ -63,14 +65,18 @@ $(function() {
 	ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
 	User user = themeDisplay.getUser();
+	//String language = themeDisplay.getLanguageId();
+	//ResourceBundle rb =  ResourceBundle.getBundle("content.mount.Language");
 %>
 
 <div id="load_init" style="background-color:#000000;opacity:0.8;height:100%;width:100%;position:absolute;z-index:700">
-	<img src="<%=request.getContextPath()%>/images/init_loading.gif" /> Loading
+	<div style="font-size:30px;width:100%;height:100px;text-align:center;margin-top:300px;color:#FFFFFF">
+		<img src="<%=request.getContextPath()%>/images/init_loading.gif" /><span id="loading_message">Loading...</span>
+	</div>
 </div>
 <div id="container" ng-app="gloria" ng-controller="InitDevices" >
 	
-	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=167">
+	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=167;">
 	</div>
 
 	<div id="hand_controller" style="background-image:url(<%=request.getContextPath()%>/images/Template.jpg); background-position:left top;width:100%;height:800px; background-repeat: no-repeat">
@@ -83,22 +89,58 @@ $(function() {
 
 			</div>
 		</div>
-		<div id="right_controls">
+		<div id="right_controls" ng-controller="MountDevice">
 			
-				
+				<div id="hand_controller_pad" style="position: absolute;top: -50px;left: 35px;">
+					<table>
+						<tr>
+							<td></td>
+							<td style="padding-left:2px;padding-right:2px;text-align:center">
+								<img id="top_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_top.png" width="20px" class="bright-button"/>
+							</td>
+							<td></td>
+						</tr>
+						<tr>
+							<td>
+								<img id="left_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_left.png" width="10px" class="bright-button"/>
+							</td>
+							<td></td>
+							<td>
+								<img id="right_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_right.png" width="10px" class="bright-button"/>
+							</td>						
+						</tr>
+						<tr>
+							<td></td>
+							<td style="padding-left:4px;padding-right:2px;">
+								<img id="down_arrow_pad" src="<%=request.getContextPath()%>/images/hand_arrow_down.png" width="20px" class="bright-button"/>
+							</td>
+							<td></td>
+						</tr>						
+					</table>
+				<!-- 	<div>
+						<img src="<%=request.getContextPath()%>/images/hand_arrow_top.png" height="32px" width="32px"/>
+					</div>
+					<div>
+						<img src="<%=request.getContextPath()%>/images/hand_arrow_left.png" height="32px" width="32px"/>
+						<img src="<%=request.getContextPath()%>/images/hand_arrow_right.png" height="32px" width="32px"/>
+					</div>
+					<div>
+						<img src="<%=request.getContextPath()%>/images/hand_arrow_down.png" height="32px" width="32px"/>
+					</div> -->
+				</div>
 				<div id="mount_target_parameters">
 					<span class="title">MOUNT</span>
 					<div>
 						<span class="regular">RA:&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						<input id="coords_ra" class="input_text" size="6"></input>
+						<input id="coords_ra" class="input_text" ng-model="ra" size="6"></input>
 					</div>
 					<div>
 						<span class="regular">DEC:&nbsp;&nbsp;</span>
-						<input id="coords_dec" class="input_text" size="6"></input>
+						<input id="coords_dec" class="input_text" ng-model="dec" size="6"></input>
 					</div>
 					<div>
 						<span class="regular">NAME: </span>
-						<input id="tags" class="input_text" size="6"></input>
+						<input id="tags" class="input_text" ng-model="target_name" size="6"></input>
 					</div>
 					<!-- <span class="regular">STATUS:</span> -->
 					<div align="center" class="status">
@@ -106,7 +148,7 @@ $(function() {
 					</div>
 					
 					<div id="mount_buttons_panel">
-						<button class="button_style"><span class="button_text">GO</span></button>
+						<button class="button_style"  ng-click="go()" ><span class="button_text">GO</span></button>
 					</div>				
 				</div>
 			
@@ -174,5 +216,40 @@ $("#foo1").carouFredSel({
 	items: 4,
 	prev : "#foo1_prev",
 	next : "#foo1_next"
+});
+$("#coords_ra").keyup('keyup', function(e){
+	var text = $(this).val();
+	if(text==""){
+		if($("#coords_dec").val()==""){
+			$("#tags").removeAttr("disabled");
+		}
+	} else {
+		if($("#tags").val()==""){
+			$("#tags").attr("disabled",true);	
+		}
+	}
+
+});
+$("#coords_dec").bind('keyup', function(e){
+	if($(this).val()==""){
+		if($("#coords_ra").val()==""){
+			$("#tags").removeAttr("disabled");
+		}
+	} else {
+		if($("#tags").val()==""){
+			$("#tags").attr("disabled",true);	
+		}
+	}
+});
+$("#tags").bind('keyup', function(e){
+	if($(this).val()==""){
+		$("#coords_ra").removeAttr("disabled");
+		$("#coords_dec").removeAttr("disabled");
+	} else {
+		if ($("#coords_ra").val()=="" && $("#coords_dec").val()==""){
+			$("#coords_ra").attr("disabled",true);
+			$("#coords_dec").attr("disabled",true);		
+		}
+	}
 });
 </script>
