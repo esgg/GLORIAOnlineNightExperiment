@@ -41,39 +41,24 @@ gloria.factory('HttpWrapper', function($http, $q) {
 	return wrapper;
 });
 
-/*gloria.factory('Sequence', function($q, HttpWrapper) {
-
-	var queue = [];
-	var execNext = function() {
-		var task = queue[0];
-		HttpWrapper(task.c).then(function(response) {
-			queue.shift();
-			task.d.resolve(response);
-			if (queue.length > 0)
-				execNext();
-		}, function(err) {
-			task.d.reject(err);
-		});
-	};
-
-	return function(config) {
-		var d = $q.defer();
-		queue.push({
-			c : config,
-			d : d
-		});
-		if (queue.length === 1)
-			execNext();
-		return d.promise;
-	};
-});*/
+/*
+ * gloria.factory('Sequence', function($q, HttpWrapper) {
+ * 
+ * var queue = []; var execNext = function() { var task = queue[0];
+ * HttpWrapper(task.c).then(function(response) { queue.shift();
+ * task.d.resolve(response); if (queue.length > 0) execNext(); }, function(err) {
+ * task.d.reject(err); }); };
+ * 
+ * return function(config) { var d = $q.defer(); queue.push({ c : config, d : d
+ * }); if (queue.length === 1) execNext(); return d.promise; }; });
+ */
 
 gloria.factory('Sequence', function($q, HttpWrapper) {
 
 	var queue = [];
 	var execNext = function() {
 		var task = queue[0];
-		
+
 		task.f().then(function(response) {
 			queue.shift();
 			task.d.resolve(response);
@@ -114,32 +99,34 @@ function GloriaApiHandler(HttpWrapper, Sequence) {
 		var promise = this.httpWrapper.http({
 			method : method,
 			url : url,
-			data : JSON.stringify(data)
+			data : angular.toJson(data)
 		});
-		
+
 		promise = promise.then(function(response) {
 
-			//alert('success: ' + response.config.url);
+			// alert('success: ' + response.config.url);
 			if (response.status == 200) {
 				if (success != undefined) {
 					success(response.data);
 				}
 			} else {
 				if (error != undefined) {
-					error(response.data);
+					error(response.data, response.status);
 				}
 				console.log(response.status);
 			}
 
 			return response.data;
 
-		});/*
-			 * , function(response) { alert('error: ' + response.config.url); if
-			 * (error != undefined) { error(response.data); }
-			 * deferred.reject(response.data); console.log(response.status);
-			 * 
-			 * return deferred.promise; });
-			 */
+		}, function(response) {
+			//alert('error: ' + response.config.url);
+			if (error != undefined) {
+				error(response.data, response.status);
+			}
+			console.log(response.status);
+
+			return response.data;
+		});
 
 		return promise;
 	};
@@ -206,8 +193,7 @@ function GloriaApiHandler(HttpWrapper, Sequence) {
 	/* Experiment context management */
 	this.getParameterValue = function(cid, name, success, error) {
 		return this.processRequest('get', 'GLORIAAPI/experiments/context/'
-				+ cid + '/parameters/' + name, null, success,
-				error);
+				+ cid + '/parameters/' + name, null, success, error);
 	};
 
 	this.getParameterTreeValue = function(cid, name, tree, success, error) {
@@ -323,7 +309,7 @@ var Base64 = {
 		string = string.replace(/\r\n/g, "\n");
 		var utftext = "";
 
-		for (var n = 0; n < string.length; n++) {
+		for ( var n = 0; n < string.length; n++) {
 
 			var c = string.charCodeAt(n);
 
