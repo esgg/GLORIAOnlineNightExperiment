@@ -52,7 +52,7 @@
 	left:45px
 }
 .title{
-	color:#CC0033;
+	color:#984d4a;
 	font-size: 0.75em;
 }
 .regular{
@@ -171,16 +171,21 @@ height: 100px;
 .image_carousel {
 	padding: 15px 0 15px 40px;
 	position: relative;
-	top:-120px;
-	left:100px;
-	width:600px;
+	top:-100px;
+	left:50px;
+	/*width:825px;*/
 }
 .image_carousel img {
 	border: 1px solid #ccc;
 	background-color: white;
-	margin: 7px;
+	margin-top:7px;
+	margin-bottom:7px;
+	margin-left:7px;
+	margin-right:7px;
 	display: block;
 	float: left;
+	height:100px;
+	max-width:100%;
 }
 
 .image_carousel a {
@@ -189,7 +194,7 @@ height: 100px;
 }
 a.prev, a.next {
 	background: url(../images/miscellaneous_sprite.png) no-repeat transparent;
-	width: 45px;
+	width: 45px;		
 	height: 50px;
 	display: block;
 	position: absolute;

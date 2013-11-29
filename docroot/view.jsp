@@ -76,7 +76,7 @@ $(function() {
 		<img src="<%=request.getContextPath()%>/images/init_loading.gif" /><span id="loading_message">Loading...</span>
 	</div>
 </div>
-<div id="container" ng-app="gloria" ng-controller="InitDevices" >
+<div id="container" ng-app="gloria" ng-controller="InitDevices" style="background-color:#000000;">
 	
 	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=167;">
 	</div>
@@ -231,21 +231,19 @@ $(function() {
 		</div>
 		<div class="clearfix"></div>
 		<a class="prev" id="foo1_prev" href="#"><span>prev</span></a>
-		<a class="next" id="foo1_next" href="#"><span>next</span></a>
+		<a class="next" id="foo1_next" href="#"><span>next</span></a> 
 	</div>
 </div>
 <script>
-$("#foo2").carouFredSel({
+/*$("#foo2").carouFredSel({
 	circular: false,
 	infinity: false,
 	auto : false,
 	responsive:true,
-	align:"center",
-	items: 5,
-	height:"auto",
+	items:4,
 	prev : "#foo1_prev",
 	next : "#foo1_next"
-});
+});*/
 /*$("#foo2 a").prettyPhoto({
 	theme: "facebook",
 	changepicturecallback: function() {

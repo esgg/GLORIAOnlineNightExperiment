@@ -1,6 +1,7 @@
 'use strict';
 
 var expTimer;
+var numImages=0;
 
 function InitDevices(GloriaAPI, $scope){
 	$scope.$watch('password', function () {
@@ -13,7 +14,7 @@ function InitDevices(GloriaAPI, $scope){
 			if(statusError == 401){
 				$("#loading_message").text("You are not authenticated in the system");		
 			} else {
-				alert("Unknown Error");
+				alert("Unknown Error:"+statusError);
 			}
 
 		});
@@ -37,7 +38,8 @@ function GetFilters(GloriaAPI, $scope, cid){
 function Expose(GloriaAPI, $scope, cid){
 	GloriaAPI.executeOperation(167,'set_ccd_attributes',function(success){
 		GloriaAPI.executeOperation(167,'start_exposure',function(success){
-			expTimer = setInterval(function(){exposureTimer(GloriaAPI, $scope, cid);},2000);
+			console.log("Borrar");
+			expTimer = setInterval(function(){exposureTimer(GloriaAPI, $scope, cid);},5000);
 		}, function(error){
 			alert(error);
 		});		
@@ -46,13 +48,17 @@ function Expose(GloriaAPI, $scope, cid){
 	});
 }
 
-function StartExposure(GloriaAPI, Sequence, data){
+function StartExposure(GloriaAPI, Sequence, data, $timeout){
 	return Sequence(function() {
 		return GloriaAPI.executeOperation(data.reservation,'start_exposure',function(success){
 			GloriaAPI.getParameterTreeValue(data.reservation,'cameras','ccd.images.[0].inst.id',function(success){
 				if (success != -1){
 					console.log("Image with id "+success+" generated");
-					expTimer = setInterval(function(){exposureTimer(GloriaAPI, data);},2000);
+					
+					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000, 1000);
+					
+					
+					//expTimer = setInterval(function(){exposureTimer(GloriaAPI, data);},2000);
 				}
 			}, function(error){
 				$("#expose_0_button").prop("disabled",false);
@@ -114,7 +120,10 @@ function MountDevice(GloriaAPI, Sequence, $scope){
 	};
 }
 
-function CcdDevice(GloriaAPI, Sequence, $scope){
+function CcdDevice(GloriaAPI, Sequence, $scope, $timeout){
+	
+	
+	
 	$scope.setFilter = function(){
 		GloriaAPI.setParameterTreeValue($scope.reservation,'fw','selected',$scope.filter,function(success){
 
@@ -139,9 +148,8 @@ function CcdDevice(GloriaAPI, Sequence, $scope){
 			$scope.status_main_ccd = "EXPOSING";
 			console.log("start exposition");
 			SetExposureTime(GloriaAPI, Sequence, $scope);
-			console.log("start exposition");
 			SetCCDAttributes(GloriaAPI, Sequence, $scope);
-			StartExposure(GloriaAPI, Sequence, $scope);
+			StartExposure(GloriaAPI, Sequence, $scope, $timeout);
 //			$scope.status_main_ccd = "EXPOSING";
 //			GloriaAPI.setParameterTreeValue(167,'cameras','ccd.images.[0].exposure',$scope.exposure_time,function(success){
 //				Expose(GloriaAPI, $scope, 167);
@@ -179,11 +187,15 @@ function GetCamerasCtrl(GloriaAPI, $scope){
 	});
 }
 
-function exposureTimer(GloriaAPI, $scope){
-	GloriaAPI.executeOperation($scope.reservation,'load_image_urls',function(success){
-		GloriaAPI.getParameterTreeValue($scope.reservation,'cameras','ccd.images.[0].inst',function(success){
-			alert("URL:"+success.jpg);
+function exposureTimer(GloriaAPI, data, $timeout){
+
+	console.log("Paso del timer");
+	GloriaAPI.executeOperation(data.reservation,'load_image_urls',function(success){
+		GloriaAPI.getParameterTreeValue(data.reservation,'cameras','ccd.images.[0].inst',function(success){
 			if (success.jpg!=null){
+		
+				console.log("Deleting timer");
+				//clearInterval(expTimer);
 				var mImage = new Image();
 				mImage.src = success.jpg;
 				mImage.onload = function(e){
@@ -197,27 +209,25 @@ function exposureTimer(GloriaAPI, $scope){
 						$("#expose_0_button").prop("disabled",false);
 					});
 				};
-				$scope.status_main_ccd = "IMAGE TAKEN";
-				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\">";
-				htmlCode = htmlCode + "<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/></a>";
+				data.status_main_ccd = "IMAGE TAKEN";
+				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
+				htmlCode = htmlCode + "<img src=\""+mImage.src+"\"/></a>";
 				$(htmlCode).appendTo("#foo2");
 				//$("<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo2");
 				//$(" <a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\"<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/></a>").appendTo("#foo2");
-				console.log("Deleting timer");
-				clearInterval(expTimer);
-				
-				
-				$("#foo2").carouFredSel({
-					circular: false,
-					infinity: false,
-					auto : false,
-					responsive:true,
-					align:"center",
-					items: 5,
-					height:"auto",
-					prev : "#foo1_prev",
-					next : "#foo1_next"
-				});
+				numImages++;
+				if (numImages>4){
+					$("#foo2").carouFredSel({
+						circular: false,
+						infinity: false,
+						auto : false,
+						responsive:true,
+						items:4,
+						width:"variable",
+						prev : "#foo1_prev",
+						next : "#foo1_next"
+					});			
+				}
 				$("#foo2 a").prettyPhoto({
 					theme: "facebook",
 					changepicturecallback: function() {
@@ -227,6 +237,10 @@ function exposureTimer(GloriaAPI, $scope){
 						$("#foo2").trigger("play");
 					}
 				});
+				/*$("#foo2 a").css("width",235);*/
+			}else{
+				console.log("Launching timer again");
+				data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
 			}
 		}, function(error){
 			$("#expose_0_button").prop("disabled",false);
@@ -235,6 +249,8 @@ function exposureTimer(GloriaAPI, $scope){
 		alert(error);
 		$("#expose_0_button").prop("disabled",false);
 	});
+					
+	
 }
 
 function startAnimation(){
