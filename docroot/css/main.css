@@ -1,6 +1,6 @@
 #main_image {
-	margin-top: -310px;
-	margin-left: 270px;
+	margin-top: -326px;
+	margin-left: 272px;
 	height: 480px; 
 	width: 480px; 
 	border-radius:240px;
@@ -14,7 +14,7 @@
 #mount_target_parameters{
 	position:relative;
 	top: 4px;
-	left: 10px
+	left: 5px;
 }
 #mount_buttons_panel{
 	position:relative;
@@ -29,12 +29,12 @@
 } 
 #main_ccd_panel{
 	position:relative;
-	top: 15px;
+	top: 10px;
 }
 #main_ccd_parameters{
 	position:relative;
 	top: 2px;
-	left: 10px
+	left: 5px
 }
 #right_controls{
 	position:relative;
@@ -91,6 +91,7 @@ p {
 	color:#FFFFFF;
 	font-size:0.8em;
 	text-align:center;
+	font-weight: bold;
 }
 .button_style{
 	border-radius:4px;
@@ -173,7 +174,7 @@ height: 100px;
 	position: relative;
 	top:-100px;
 	left:50px;
-	/*width:825px;*/
+	width:800px;
 }
 .image_carousel img {
 	border: 1px solid #ccc;
@@ -198,14 +199,26 @@ a.prev, a.next {
 	height: 50px;
 	display: block;
 	position: absolute;
-	top: 50%;
+	top: 50px;
 }
-a.prev {			left: -22px;
-					background-position: 0 0; }
-a.prev:hover {		background-position: 0 -50px; }
-a.next {			right: -50px;
-					background-position: -50px 0; }
-a.next:hover {		background-position: -50px -50px; }
+a.prev {			
+	left: -22px;
+	background-position: 0 0; 
+	opacity:0.5;
+}
+a.prev:hover {		
+	background-position: 0 0px; 
+	opacity:1.0;
+}
+a.next {
+	right: -50px;
+	background-position: -50px 0; 
+	opacity:0.5;
+}
+a.next:hover {		
+	background-position: -50px 0px; 
+	opacity:1.0;
+}
 
 a.prev span, a.next span {
 	display: none;
@@ -224,4 +237,56 @@ a.prev span, a.next span {
 
 .bright-button:hover {
 	opacity:1.0;
+}
+.ccd_button{
+	background-color:#6C7B8B;
+	opacity:0.2;
+	border-radius:5px;
+	padding:7px;
+}
+.ccd_button:hover{
+	opacity:1.0;
+}
+.ccd_button_selected{
+	background-color:#6C7B8B;
+	opacity:1.0;
+	border-radius:5px;
+	padding:7px;
+}
+#gloria_info{
+	position:absolute;
+	top:750px;
+	left:280px;
+}
+.weather_condition_value{
+	float:left;
+	margin-left:15px;
+	margin-top:15px;
+}
+#focuser{
+	position:absolute;
+	top:680px;
+	left:350px;
+	width:300px;
+}
+.mess-info
+{
+   	animation-name: mess-info-animation;
+   	animation-duration: 1.5s;
+   	animation-iteration-count: infinite;
+   	-webkit-animation-name: mess-info-animation;
+   	-webkit-animation-duration: 1.5s;
+   	-webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes mess-info-animation {
+    0% { opacity: 0.5; }
+    50% { opacity: 1.0; }    
+    100% { opacity: 0.5; }
+}
+
+@keyframes mess-info-animation {
+    0% { opacity: 0.5; }
+    50% { opacity: 1.0; }    
+    100% { opacity: 0.5; }
 }
