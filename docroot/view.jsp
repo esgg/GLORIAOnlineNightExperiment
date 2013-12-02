@@ -23,6 +23,7 @@
 <%@ page import="com.liferay.portal.model.User"%>
 <%@ page import="java.util.Locale" %>
 <%@ page import="java.util.ResourceBundle" %>
+<%@ page import="com.liferay.portal.util.PortalUtil"%>;
 
 <!-- 
 <link rel="stylesheet"
@@ -33,11 +34,12 @@
 <link rel="stylesheet"
 	href="<%= request.getContextPath()%>/css/main.css" />
 <link rel="stylesheet" type="text/css" media="all" href="<%= request.getContextPath()%>/js/prettyphoto/css/prettyPhoto.css">
+<link rel="stylesheet" type="text/css" media="all" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 
 <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-<!-- 
+ 
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
- -->
+
 <script
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
 <script src="<%=request.getContextPath()%>/js/gloriapi.js"></script>
@@ -67,18 +69,20 @@ $(function() {
 	ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
 	User user = themeDisplay.getUser();
+	String reservationId = PortalUtil.getOriginalServletRequest(request).getParameter("reservation"); 
 	//String language = themeDisplay.getLanguageId();
 	//ResourceBundle rb =  ResourceBundle.getBundle("content.mount.Language");
 %>
-
+ 
 <div id="load_init" style="background-color:#000000;opacity:0.8;height:100%;width:100%;position:absolute;z-index:700">
 	<div style="font-size:30px;width:100%;height:100px;text-align:center;margin-top:300px;color:#FFFFFF">
 		<img src="<%=request.getContextPath()%>/images/init_loading.gif" /><span id="loading_message">Loading...</span>
 	</div>
 </div>
+
 <div id="container" ng-app="gloria" ng-controller="InitDevices" style="background-color:#000000;">
 	
-	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=167;">
+	<div ng-init="user='<%= user.getEmailAddress() %>';password='<%= user.getPassword() %>';reservation=<%= reservationId %>;">
 	</div>
 
 	<div id="hand_controller" style="background-image:url(<%=request.getContextPath()%>/images/Template.jpg); background-position:left top;width:100%;height:800px; background-repeat: no-repeat">
@@ -178,7 +182,7 @@ $(function() {
 						</table>
 					</div>
 					<div align="center" class="status" ng-model="status_main_ccd" ng-init="status_main_ccd='READY'">
-						<span class="status_text">{{status_main_ccd}}</span>
+						<span id="ccd_status" class="status_text">{{status_main_ccd}}</span>
 					</div>
 					<div id="main_ccd_buttons_panel">
 						<button id="expose_0_button"class="button_style" ng-click="expose()"><span class="button_text">START</span></button>
@@ -190,10 +194,53 @@ $(function() {
 			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
 				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
 			</div>
+			<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"/>
 			<div id="main_image_container" style="margin-left:0px;">
-				<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"/>
+				
+			</div> 
+		</div>
+		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:625px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
+			CCD1
+		</div>
+		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:625px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+			CCD0
+		</div>
+		
+	</div>
+	<div id="focuser">
+		<p class="regular">
+  			Position:<span id="amount" style="font-weight:bold;"></span>
+		</p>
+		<div id="slider-range-min"></div>
+	</div>
+	<div id="gloria_info">
+		<div id="weather_station" ng-controller="WeatherDevice" style="width:500px">
+
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/humidity.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="humidity">--- % RH</label>
+				</div>
 			</div>
-		</div> 
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/wind.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="velocity">--- m/s</label>
+				</div>
+			</div>
+			<div style="float:left; display:inline-block;width:33%">
+				<div style="float:left">
+					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/temperature.png"/>
+				</div>
+				<div class="weather_condition_value">
+					<label class="no_alarm" id="temperature">--- Deg. M</label>
+				</div>
+			</div>
+		</div>
 	</div>
 	<div class="image_carousel">
 		<div id="foo2">
@@ -235,6 +282,26 @@ $(function() {
 	</div>
 </div>
 <script>
+$(function() {
+    $( "#slider-range-min" ).slider({
+      range: "min",
+      value: 0,
+      min: -500,
+      max: 500,
+      slide: function( event, ui ) {
+        $( "#amount" ).text(ui.value);
+      },
+      stop: function(event,ui){
+    	  GlAPI.setParameterTreeValue(<%= reservationId %>,'focuser','steps',(ui.value-focuserPosition),function(success){
+				//TODO executar operación mover enfocador
+				focuserPosition = ui.value;
+			}, function(error){
+
+			});
+      }
+    });
+    $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
+  });
 /*$("#foo2").carouFredSel({
 	circular: false,
 	infinity: false,
@@ -299,4 +366,17 @@ $("#tags").bind('keyup', function(e){
 		}
 	}
 });
+/*
+$("#ccd_button_0").click(function(){
+	$("#ccd_button_0").attr("class", "ccd_button_selected");
+	$("#ccd_button_1").attr("class", "ccd_button");
+	$("filter_selector").removeAttr("disabled");
+	setOrder(0);
+});
+$("#ccd_button_1").click(function(){
+	$("#ccd_button_1").attr("class", "ccd_button_selected");
+	$("#ccd_button_0").attr("class", "ccd_button");
+	$("filter_selector").attr("disabled",true);
+	setOrder(1);
+});*/
 </script>
