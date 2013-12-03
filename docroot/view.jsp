@@ -73,7 +73,7 @@ $(function() {
 	//String language = themeDisplay.getLanguageId();
 	//ResourceBundle rb =  ResourceBundle.getBundle("content.mount.Language");
 %>
- 
+  
 <div id="load_init" style="background-color:#000000;opacity:0.8;height:100%;width:100%;position:absolute;z-index:700">
 	<div style="font-size:30px;width:100%;height:100px;text-align:center;margin-top:300px;color:#FFFFFF">
 		<img src="<%=request.getContextPath()%>/images/init_loading.gif" /><span id="loading_message">Loading...</span>
@@ -199,10 +199,10 @@ $(function() {
 				
 			</div> 
 		</div>
-		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:625px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
+		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:965px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
 			CCD1
 		</div>
-		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:625px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:965px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
 			CCD0
 		</div>
 		

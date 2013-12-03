@@ -3,10 +3,24 @@
 	margin-left: 272px;
 	height: 480px; 
 	width: 480px; 
-	border-radius:240px;
+	border-radius:50%;
 	border:1px solid white;
 	overflow:hidden;
+	/*
+	transition-property: height, width, margin-top, margin-left;
+    transition-duration: 10s;
+    transition-timing-function: ease-out;
+	-webkit-transition-duration:5s;
+	-moz-transition-duration:5s;
+	-o-transition-duration:5s;*/
 }
+/*
+#main_image:hover{
+  height: 180px; 
+  width: 180px;
+  margin-top: -176px;
+  margin-left: 422px; 
+}*/
 #mount_target{
 	position:relative;
 	top: 10px
@@ -230,7 +244,16 @@ a.prev span, a.next span {
 #image_0{
 	max-width:300%;
 	height:480px;
+	margin-top: 0px;
+	margin-left: 0px;
+/*		transition-property: margin-top, margin-left;
+    transition-duration: 5s;
+    transition-timing-function: ease-out;
+	-webkit-transition-duration:5s;
+	-moz-transition-duration:5s;
+	-o-transition-duration:5s;*/
 }
+
 .bright-button {
 	opacity:0.7;
 }
@@ -255,7 +278,7 @@ a.prev span, a.next span {
 }
 #gloria_info{
 	position:absolute;
-	top:750px;
+	top:1090px;
 	left:280px;
 }
 .weather_condition_value{
@@ -265,7 +288,8 @@ a.prev span, a.next span {
 }
 #focuser{
 	position:absolute;
-	top:680px;
+	/*top:680px;*/
+	top:1020px;
 	left:350px;
 	width:300px;
 }

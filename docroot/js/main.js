@@ -97,10 +97,37 @@ function SetExposureTime(GloriaAPI, Sequence, data){
 	});
 }
 
+function SetTargetName(GloriaAPI, Sequence, $scope){
+	
+	return Sequence(function() {
+		return GloriaAPI.setParameterTreeValue($scope.reservation,'mount','target.object',$("#tags").val(),function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
+function SetRADEC(GloriaAPI, Sequence, $scope){
+	var coordinates = new Object();
+	coordinates.ra = $("#coords_ra").val();
+	coordinates.dec = $("#coords_dec").val();
+	
+	return Sequence(function() {
+		return GloriaAPI.setParameterTreeValue($scope.reservation,'mount','target.coordinates',coordinates,function(success){
+			
+		}, function(error){
+			
+		});
+	});
+	
+}
+
 function MountDevice(GloriaAPI, Sequence, $scope){
 	
 	$scope.go = function(){
-		console.log($scope.ra);
+
 		var raRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
 		var decRegularExpr = new RegExp(/^[-]?[0-9]+.[0-9]+$/);
 		var ra_value = $("#coords_ra").val();
@@ -109,8 +136,11 @@ function MountDevice(GloriaAPI, Sequence, $scope){
 		if ($("#tags").val() == ""){	//Check if this field is empty
 			if ((ra_value.match(raRegularExpr)) && (ra_value>=0) && (ra_value<360)){
 					if ((dec_value.match(decRegularExpr) && (dec_value>=-90) && (dec_value<=90))){
+						//Set radec
+						SetRADEC(GloriaAPI, Sequence, $scope);
 						//Execute go operation
-						alert("Go");
+						
+						
 					} else {
 						alert("Wrong dec value (MIN:-90, MAX:90)");
 					}
@@ -118,6 +148,8 @@ function MountDevice(GloriaAPI, Sequence, $scope){
 				alert("Wrong ra value (MIN:0, MAX:360 not incluided)");
 			}	
 		} else {
+			//Set target name
+			SetTargetName(GloriaAPI, Sequence, $scope);
 			//Execute go operation
 			alert("Go");
 		}
@@ -187,6 +219,43 @@ function CcdDevice(GloriaAPI, Sequence, $scope, $timeout){
 			$("#ccd_status").addClass("mess-info");
 			$scope.status_main_ccd = "EXPOSING";
 			console.log("start exposition");
+			var hideTimer = setInterval(function(){
+				var height = $("#main_image").height();
+				var width = $("#main_image").width();
+				var mTop = $("#main_image").css("margin-top");
+				var mLeft = $("#main_image").css("margin-left");
+				var imgTop = $("#image_0").css("margin-top");
+				var imgLeft = $("#image_0").css("margin-left");
+				
+				var mTopString,mTopValue, imgTopString, imgTopValue;
+				var mLeftString,mLeftValue, imgLeftString, imgLeftValue;
+				
+				
+				height = height - 16;
+				width = width - 16;
+				
+				mTopString = mTop.substring(0,mTop.length-2);
+				mLeftString = mLeft.substring(0,mLeft.length-2);
+				imgTopString = imgTop.substring(0,imgTop.length-2);
+				imgLeftString = imgLeft.substring(0, imgLeft.length-2);
+				
+				mTopValue = parseInt(mTopString) + 8;
+				mLeftValue =  parseInt(mLeftString) + 8;
+				imgTopValue = parseInt(imgTopString) - 8;
+				imgLeftValue = parseInt(imgLeftString) - 8;
+				
+				$("#main_image").height(height);
+				$("#main_image").width(width);
+				$("#main_image").css("margin-top", mTopValue+"px");
+				$("#main_image").css("margin-left", mLeftValue+"px");
+				$("#image_0").css("margin-top",imgTopValue+"px");
+				$("#image_0").css("margin-left",imgLeftValue+"px");
+				
+				
+				if (height<180){
+					clearInterval(hideTimer);
+				}
+			},34);
 			SetExposureTime(GloriaAPI, Sequence, $scope);
 			SetCCDAttributes(GloriaAPI, Sequence, $scope);
 			StartExposure(GloriaAPI, Sequence, $scope, $timeout);
