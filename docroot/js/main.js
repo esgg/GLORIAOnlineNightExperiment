@@ -5,6 +5,8 @@ var numImages=0;
 var ccdOrder=0;
 var GlAPI;
 var focuserPosition=0;
+var max_ccd_timer=5;
+var num_ccd_timer=max_ccd_timer;
 
 function InitDevices(GloriaAPI, $scope){
 	GlAPI = GloriaAPI;
@@ -39,7 +41,7 @@ function GetFilters(GloriaAPI, $scope, cid){
 	});
 	
 }
-
+/*
 function Expose(GloriaAPI, $scope, cid){
 	GloriaAPI.executeOperation(167,'set_ccd_attributes',function(success){
 		GloriaAPI.executeOperation(167,'start_exposure',function(success){
@@ -52,7 +54,7 @@ function Expose(GloriaAPI, $scope, cid){
 		alert(error);
 	});
 }
-
+*/
 function StartExposure(GloriaAPI, Sequence, data, $timeout){
 	return Sequence(function() {
 		return GloriaAPI.executeOperation(data.reservation,'start_exposure',function(success){
@@ -60,18 +62,18 @@ function StartExposure(GloriaAPI, Sequence, data, $timeout){
 				if (success != -1){
 					console.log("Image with id "+success+" generated");
 					
-					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000, 1000);
+					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
 					
 					
 					//expTimer = setInterval(function(){exposureTimer(GloriaAPI, data);},2000);
 				}
 			}, function(error){
-				$("#expose_0_button").prop("disabled",false);
+				$("#expose_0_button").removeAttr("disabled");
 			});
 				
 				
 			}, function(error){
-				$("#expose_0_button").prop("disabled",false);
+				$("#expose_0_button").removeAttr("disabled");
 			});
 	});
 }
@@ -81,7 +83,7 @@ function SetCCDAttributes(GloriaAPI, Sequence, data){
 		return GloriaAPI.executeOperation(data.reservation,'set_ccd_attributes',function(success){
 				
 			}, function(error){
-				$("#expose_0_button").prop("disabled",false);
+				$("#expose_0_button").removeAttr("disabled");
 			});
 	});
 }
@@ -92,7 +94,7 @@ function SetExposureTime(GloriaAPI, Sequence, data){
 		return GloriaAPI.setParameterTreeValue(data.reservation,'cameras','ccd.images.['+ccdOrder+'].exposure',parseFloat(data.exposure_time),function(success){
 				
 			}, function(error){
-				$("#expose_0_button").prop("disabled",false);
+				$("#expose_0_button").removeAttr("disabled");
 			});
 	});
 }
@@ -214,11 +216,12 @@ function CcdDevice(GloriaAPI, Sequence, $scope, $timeout){
 	$scope.expose = function(){
 
 		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
-			$("#expose_0_button").prop("disabled",true);
-			$("#loading").css("visibility","visible");
+			$("#expose_0_button").attr("disabled",true);
+			/*$("#loading").css("visibility","visible");*/
 			$("#ccd_status").addClass("mess-info");
 			$scope.status_main_ccd = "EXPOSING";
 			console.log("start exposition");
+			/*
 			var hideTimer = setInterval(function(){
 				var height = $("#main_image").height();
 				var width = $("#main_image").width();
@@ -255,7 +258,8 @@ function CcdDevice(GloriaAPI, Sequence, $scope, $timeout){
 				if (height<180){
 					clearInterval(hideTimer);
 				}
-			},34);
+			},34);*/
+			num_ccd_timer=max_ccd_timer;
 			SetExposureTime(GloriaAPI, Sequence, $scope);
 			SetCCDAttributes(GloriaAPI, Sequence, $scope);
 			StartExposure(GloriaAPI, Sequence, $scope, $timeout);
@@ -309,7 +313,7 @@ function exposureTimer(GloriaAPI, data, $timeout){
 					$("#image_0").load(function (e){
 						$("#main_image_container").css("margin-left",shift);
 						$("#loading").css("visibility","hidden");
-						$("#expose_0_button").prop("disabled",false);
+						$("#expose_0_button").removeAttr("disabled");
 					});
 				};
 				data.status_main_ccd = "IMAGE TAKEN";
@@ -344,17 +348,24 @@ function exposureTimer(GloriaAPI, data, $timeout){
 				/*$("#foo2 a").css("width",235);*/
 			}else{
 				console.log("Launching timer again");
-				data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
+				if (num_ccd_timer == 0){
+					data.status_main_ccd = "ERROR TAKING IMAGE";	
+				} else {
+					num_ccd_timer--;
+					data.timer = $timeout(function() {exposureTimer(GloriaAPI, data, $timeout);}, 1000);
+				}
+
 			}
 		}, function(error){
-			$("#expose_0_button").prop("disabled",false);
+			$("#expose_0_button").removeAttr("disabled");
+			data.status_main_ccd = "ERROR TAKING IMAGE";
 		});
 	}, function(error){
 		alert(error);
-		$("#expose_0_button").prop("disabled",false);
+		$("#expose_0_button").removeAttr("disabled");
+		data.status_main_ccd = "ERROR TAKING IMAGE";
 	});
-					
-	
+						
 }
 
 function startAnimation(){
@@ -380,4 +391,22 @@ function setOrder(order){
 	}, function(error){
 		
 	});
+}
+
+function rotateAnnotationCropper(offsetSelector, xCoordinate, yCoordinate, cropper){
+    //alert(offsetSelector.left);
+    var x = xCoordinate - offsetSelector.offset().left - offsetSelector.width()/2;
+    var y = -1*(yCoordinate - offsetSelector.offset().top - offsetSelector.height()/2);
+    var theta = Math.atan2(y,x)*(180/Math.PI);        
+
+
+    var cssDegs = convertThetaToCssDegs(theta);
+    var rotate = 'rotate(' +cssDegs + 'deg)';
+    cropper.css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+       
+}
+
+function convertThetaToCssDegs(theta){
+	var cssDegs = 90 - theta;
+	return cssDegs;
 }

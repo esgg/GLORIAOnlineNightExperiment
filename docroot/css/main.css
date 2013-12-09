@@ -1,8 +1,8 @@
 #main_image {
 	margin-top: -326px;
-	margin-left: 272px;
-	height: 480px; 
-	width: 480px; 
+	margin-left: 270px;
+	height: 482px; 
+	width: 482px; 
 	border-radius:50%;
 	border:1px solid white;
 	overflow:hidden;
@@ -14,6 +14,7 @@
 	-moz-transition-duration:5s;
 	-o-transition-duration:5s;*/
 }
+
 /*
 #main_image:hover{
   height: 180px; 
@@ -278,7 +279,7 @@ a.prev span, a.next span {
 }
 #gloria_info{
 	position:absolute;
-	top:1090px;
+	top:650px;
 	left:280px;
 }
 .weather_condition_value{
@@ -288,9 +289,9 @@ a.prev span, a.next span {
 }
 #focuser{
 	position:absolute;
-	/*top:680px;*/
-	top:1020px;
-	left:350px;
+	top:470px;
+	/*top:1020px;*/
+	left:365px;
 	width:300px;
 }
 .mess-info
@@ -313,4 +314,46 @@ a.prev span, a.next span {
     0% { opacity: 0.5; }
     50% { opacity: 1.0; }    
     100% { opacity: 0.5; }
+}
+.focuser_opacity{
+	opacity: 0;
+	transition-property: opacity;
+    transition-duration: 2s;
+    transition-timing-function: ease-out;
+	-webkit-transition-duration:2s;
+	-moz-transition-duration:2s;
+	-o-transition-duration:2s;
+}
+#focus_marker{
+	width: 20px; 
+	height:25px; 
+	background: grey; 
+	position:absolute; 
+	left:503px;
+	top: 50px;
+	border-radius: 5px; 
+	cursor: move;
+	-moz-transform:rotate(0deg);
+    -moz-transform-origin:5px 270px;
+                        
+    transform:rotate(0deg);
+    transform-origin:5px 270px;                          
+
+    -ms-transform:rotate(0deg);
+    -ms-transform-origin:5px 270px;                                
+                        
+    -webkit-transform:rotate(0deg);
+    -webkit-transform-origin:5px 270px;
+    
+    /*z-index:170;*/ 	
+}
+#reference_focuser{
+	position:absolute;
+	width:0px;
+	height:0px;
+ 	border-left:25px solid transparent;  /* left arrow slant */
+ 	border-right:25px solid transparent; /* right arrow slant */
+ 	border-top:25px solid #984D4A; /* bottom, add background color here */
+	top: 10px;
+	left: 487px;
 }

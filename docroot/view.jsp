@@ -23,7 +23,7 @@
 <%@ page import="com.liferay.portal.model.User"%>
 <%@ page import="java.util.Locale" %>
 <%@ page import="java.util.ResourceBundle" %>
-<%@ page import="com.liferay.portal.util.PortalUtil"%>;
+<%@ page import="com.liferay.portal.util.PortalUtil"%>
 
 <!-- 
 <link rel="stylesheet"
@@ -190,6 +190,8 @@ $(function() {
 				</div>
 			</div>
 		</div>
+			<div id="reference_focuser"></div>
+			<div id="focus_marker"></div>
 		<div id="main_image">
 			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
 				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
@@ -199,20 +201,22 @@ $(function() {
 				
 			</div> 
 		</div>
-		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:965px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
+		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:525px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
 			CCD1
 		</div>
-		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:965px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
+		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:525px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
 			CCD0
 		</div>
 		
 	</div>
-	<div id="focuser">
+	<!-- 
+	<div id="focuser" class="focuser_opacity">
 		<p class="regular">
   			Position:<span id="amount" style="font-weight:bold;"></span>
 		</p>
 		<div id="slider-range-min"></div>
 	</div>
+	 -->
 	<div id="gloria_info">
 		<div id="weather_station" ng-controller="WeatherDevice" style="width:500px">
 
@@ -282,6 +286,7 @@ $(function() {
 	</div>
 </div>
 <script>
+/*
 $(function() {
     $( "#slider-range-min" ).slider({
       range: "min",
@@ -302,6 +307,7 @@ $(function() {
     });
     $( "#amount" ).val( "$" + $( "#slider-range-min" ).slider( "value" ) );
   });
+  */
 /*$("#foo2").carouFredSel({
 	circular: false,
 	infinity: false,
@@ -366,6 +372,26 @@ $("#tags").bind('keyup', function(e){
 		}
 	}
 });
+
+$('#focus_marker').on('mousedown', function(e){
+		
+		var dragged = true;
+	
+		e.originalEvent.preventDefault();
+		
+        $(window).mousemove(function(event){
+            rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));    
+        });
+        $(window).mouseup(function(event){ 
+        	if (dragged){
+        		$(window).unbind('mousemove');
+        		console.log("Moving focuser");
+        		dragged = false;
+        	}	
+        });
+        
+    });                    
+	
 /*
 $("#ccd_button_0").click(function(){
 	$("#ccd_button_0").attr("class", "ccd_button_selected");
