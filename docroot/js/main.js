@@ -20,6 +20,8 @@ function InitDevices(GloriaAPI, $scope){
 		}, function(dataError, statusError){
 			if(statusError == 401){
 				$("#loading_message").text("You are not authenticated in the system");		
+			} else if (statusError == 404){
+				$("#loading_message").text("No reservation id specified");
 			} else {
 				alert("Unknown Error:"+statusError);
 			}
@@ -401,9 +403,17 @@ function rotateAnnotationCropper(offsetSelector, xCoordinate, yCoordinate, cropp
 
 
     var cssDegs = convertThetaToCssDegs(theta);
+    
+    /*
     var rotate = 'rotate(' +cssDegs + 'deg)';
-    cropper.css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-       
+    var rotateInfo = 'rotate(' +(-1)*cssDegs + 'deg)';
+    if (cssDegs < 180){
+        cropper.css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+        $("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+    	
+    }
+    */
+    return cssDegs;   
 }
 
 function convertThetaToCssDegs(theta){

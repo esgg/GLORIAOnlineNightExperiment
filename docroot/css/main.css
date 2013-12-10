@@ -357,3 +357,20 @@ a.prev span, a.next span {
 	top: 10px;
 	left: 487px;
 }
+#focus_marker_info{
+	position:relative;
+	background-color:black;
+	color:white;
+	padding:5px;
+	top:-35px;
+	left:30px;
+	opacity:1.0;
+	border-radius:20%;
+	border:1px solid white;
+	 -webkit-transform:rotate(0deg);
+	 -ms-transform:rotate(0deg);
+	 transform:rotate(0deg);
+	 -moz-transform:rotate(0deg);
+	 visibility:hidden;
+	 width:150%;
+}

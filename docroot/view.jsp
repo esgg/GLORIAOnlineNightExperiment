@@ -190,8 +190,10 @@ $(function() {
 				</div>
 			</div>
 		</div>
-			<div id="reference_focuser"></div>
-			<div id="focus_marker"></div>
+		<div id="reference_focuser"></div>
+		<div id="focus_marker">
+			<div id="focus_marker_info">0</div>
+		</div>
 		<div id="main_image">
 			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
 				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
@@ -373,19 +375,104 @@ $("#tags").bind('keyup', function(e){
 	}
 });
 
+var dragged = false;
+var initFocuserPosition = 3500;
+var finalFocuserPosition = 7000;
+var currentFocuserPosition = 3500;
+
+$('#focus_marker').on('mouseenter', function(e){
+	$('#focus_marker_info').text(currentFocuserPosition);
+	$('#focus_marker_info').css("visibility","visible");
+});
+
+$('#focus_marker').on('mouseleave', function(e){
+	if (!dragged){
+		$('#focus_marker_info').css("visibility","hidden");		
+	}
+});
+
 $('#focus_marker').on('mousedown', function(e){
 		
-		var dragged = true;
+		var movementDirection = 0;  //Undefined
+		var lastRotateDegree = 0;
+		var rotateDegree = 0;
+		
+		var limitClockwiseDirection = false;
+		var limitCounterClockwiseDirection = false;
+	
+		dragged = true;
+		
+		$('#focus_marker').css("opacity","0.8");
 	
 		e.originalEvent.preventDefault();
 		
         $(window).mousemove(function(event){
-            rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));    
+            var rotateOriginalDegree = rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));
+            
+            if (rotateOriginalDegree < 0){
+            	rotateDegree = (270-rotateOriginalDegree);
+            } else {
+            	rotateDegree = rotateOriginalDegree;
+            }
+            
+            if (movementDirection == 0){ //Is the first movement
+            	lastRotateDegree = rotateDegree;
+            	movementDirection = 1; // Prepare to define direction
+            } else {
+            	if (rotateDegree > lastRotateDegree){
+            		
+            		 if ((lastRotateDegree < 180 ) && (rotateDegree >= 180)){
+            			 limitClockwiseDirection = true;
+            		 } 
+            		 if(!limitClockwiseDirection){
+            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+
+						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+            			     
+                         currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
+                         $('#focus_marker_info').text(currentFocuserPosition);    
+                         
+                         lastRotateDegree = rotateDegree;
+                     }
+            	} else {
+            		if ((lastRotateDegree < 180) && (rotateDegree<180)){
+            			limitClockwiseDirection = false;
+            		}
+            		if (!limitClockwiseDirection){
+            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+
+						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+            			
+                        currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
+                        $('#focus_marker_info').text(currentFocuserPosition);
+            		}
+            		/*
+            		if (rotateDegree > 180){
+            			console.log("Tienes que pintar");
+            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+
+						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+            			
+                        currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
+                        $('#focus_marker_info').text(currentFocuserPosition);            	
+                    }
+            		*/
+            	}
+            	
+            }
+            
         });
         $(window).mouseup(function(event){ 
         	if (dragged){
         		$(window).unbind('mousemove');
         		console.log("Moving focuser");
+        		$('#focus_marker').css("opacity","1.0");		
         		dragged = false;
         	}	
         });
