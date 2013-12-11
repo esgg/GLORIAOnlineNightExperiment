@@ -159,7 +159,7 @@ $(function() {
 				</div>
 			
 			<div id="main_ccd_panel">
-				<span class="title">MAIN CCD</span>
+				<span class="title">MAIN CCD</span><a id="ccd_alert" href="#"><span id="ccd_budge" class="badge badge-important" style="visibility:hidden">0</span></a>
 				<div id="main_ccd_parameters" ng-controller="CcdDevice">
 					<div>
 						<table>
@@ -194,6 +194,7 @@ $(function() {
 		<div id="focus_marker">
 			<div id="focus_marker_info">0</div>
 		</div>
+		 
 		<div id="main_image">
 			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
 				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
@@ -203,13 +204,13 @@ $(function() {
 				
 			</div> 
 		</div>
+		 
 		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:525px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
 			CCD1
 		</div>
 		<div id="ccd_button_0" class="ccd_button_selected" style="position:absolute;top:525px;left:710px;" ng-controller="CcdDevice" ng-click="setOrder(0)">
 			CCD0
 		</div>
-		
 	</div>
 	<!-- 
 	<div id="focuser" class="focuser_opacity">
@@ -220,11 +221,11 @@ $(function() {
 	</div>
 	 -->
 	<div id="gloria_info">
-		<div id="weather_station" ng-controller="WeatherDevice" style="width:500px">
+		<div id="weather_station" ng-controller="WeatherDevice" style="width:400px;margin:0 auto;">
 
 			<div style="float:left; display:inline-block;width:33%">
 				<div style="float:left">
-					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/humidity.png"/>
+					<img height="32px" width="32px" src="<%=request.getContextPath()%>/images/humidity.png"/>
 				</div>
 				<div class="weather_condition_value">
 					<label class="no_alarm" id="humidity">--- % RH</label>
@@ -232,7 +233,7 @@ $(function() {
 			</div>
 			<div style="float:left; display:inline-block;width:33%">
 				<div style="float:left">
-					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/wind.png"/>
+					<img height="32px" width="32px" src="<%=request.getContextPath()%>/images/wind.png"/>
 				</div>
 				<div class="weather_condition_value">
 					<label class="no_alarm" id="velocity">--- m/s</label>
@@ -240,7 +241,7 @@ $(function() {
 			</div>
 			<div style="float:left; display:inline-block;width:33%">
 				<div style="float:left">
-					<img height="48px" width="48px" src="<%=request.getContextPath()%>/images/temperature.png"/>
+					<img height="32px" width="32px" src="<%=request.getContextPath()%>/images/temperature.png"/>
 				</div>
 				<div class="weather_condition_value">
 					<label class="no_alarm" id="temperature">--- Deg. M</label>
@@ -376,9 +377,9 @@ $("#tags").bind('keyup', function(e){
 });
 
 var dragged = false;
-var initFocuserPosition = 3500;
-var finalFocuserPosition = 7000;
-var currentFocuserPosition = 3500;
+var initFocuserPosition = 0;
+var finalFocuserPosition = 1000;
+var currentFocuserPosition = 0;
 
 $('#focus_marker').on('mouseenter', function(e){
 	$('#focus_marker_info').text(currentFocuserPosition);
@@ -409,69 +410,33 @@ $('#focus_marker').on('mousedown', function(e){
         $(window).mousemove(function(event){
             var rotateOriginalDegree = rotateAnnotationCropper($('#main_image').parent(), event.pageX,event.pageY, $('#focus_marker'));
             
-            if (rotateOriginalDegree < 0){
-            	rotateDegree = (270-rotateOriginalDegree);
+            if ((rotateOriginalDegree < 270) && (rotateOriginalDegree > 180)){
+            	rotateDegree = rotateOriginalDegree - 360;
             } else {
             	rotateDegree = rotateOriginalDegree;
             }
             
-            if (movementDirection == 0){ //Is the first movement
-            	lastRotateDegree = rotateDegree;
-            	movementDirection = 1; // Prepare to define direction
-            } else {
-            	if (rotateDegree > lastRotateDegree){
-            		
-            		 if ((lastRotateDegree < 180 ) && (rotateDegree >= 180)){
-            			 limitClockwiseDirection = true;
-            		 } 
-            		 if(!limitClockwiseDirection){
-            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
-						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
+            var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
+			var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
 
-						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
-            			     
-                         currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
-                         $('#focus_marker_info').text(currentFocuserPosition);    
-                         
-                         lastRotateDegree = rotateDegree;
-                     }
-            	} else {
-            		if ((lastRotateDegree < 180) && (rotateDegree<180)){
-            			limitClockwiseDirection = false;
-            		}
-            		if (!limitClockwiseDirection){
-            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
-						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
-
-						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
-            			
-                        currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
-                        $('#focus_marker_info').text(currentFocuserPosition);
-            		}
-            		/*
-            		if (rotateDegree > 180){
-            			console.log("Tienes que pintar");
-            			var rotate = 'rotate(' +rotateOriginalDegree + 'deg)';
-						var rotateInfo = 'rotate(' +(-1)*rotateOriginalDegree + 'deg)';
-
-						$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
-            			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
-            			
-                        currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
-                        $('#focus_marker_info').text(currentFocuserPosition);            	
-                    }
-            		*/
-            	}
-            	
-            }
+			$('#focus_marker').css({'-moz-transform': rotate, 'transform' : rotate, '-webkit-transform': rotate, '-ms-transform': rotate});
+			$("#focus_marker_info").css({'-moz-transform': rotateInfo, 'transform' : rotateInfo, '-webkit-transform': rotateInfo, '-ms-transform': rotateInfo});
+			     
+             currentFocuserPosition = initFocuserPosition + parseInt(rotateDegree*((finalFocuserPosition - initFocuserPosition) / 180));
+             $('#focus_marker_info').text(currentFocuserPosition);    
             
         });
         $(window).mouseup(function(event){ 
         	if (dragged){
+        		
         		$(window).unbind('mousemove');
-        		console.log("Moving focuser");
+        		console.log("Moving focuser:"+$("#focus_marker_info").text());
+        		
+        		GlAPI.setParameterTreeValue(<%= reservationId %>,'focuser','position',currentFocuserPosition,function(success){
+
+     			}, function(error){
+
+     			});
         		$('#focus_marker').css("opacity","1.0");		
         		dragged = false;
         	}	
@@ -479,6 +444,13 @@ $('#focus_marker').on('mousedown', function(e){
         
     });                    
 	
+$("#ccd_alert").tooltip({
+	show: {
+		 effect: "slideDown",
+	     delay: 250
+	}
+});
+
 /*
 $("#ccd_button_0").click(function(){
 	$("#ccd_button_0").attr("class", "ccd_button_selected");
