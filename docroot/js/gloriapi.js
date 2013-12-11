@@ -220,6 +220,10 @@ function GloriaApiHandler(HttpWrapper, Sequence) {
 		return this.processRequest('get', 'GLORIAAPI/experiments/context/'
 				+ cid + '/execute/' + name, null, success, error);
 	};
+	this.getImagesByContext = function(cid, success, error) {
+        return this.processRequest('get', 'GLORIAAPI/images/list/context/'
+                        + cid, null, success, error);
+	};
 }
 
 /**
