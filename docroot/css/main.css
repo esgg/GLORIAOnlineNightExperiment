@@ -44,7 +44,7 @@
 } 
 #main_ccd_panel{
 	position:relative;
-	top: 10px;
+	top: 15px;
 }
 #main_ccd_parameters{
 	position:relative;
@@ -69,6 +69,7 @@
 .title{
 	color:#984d4a;
 	font-size: 0.75em;
+	margin-right:5px;
 }
 .regular{
 	color:#FFFFFF;
@@ -279,13 +280,15 @@ a.prev span, a.next span {
 }
 #gloria_info{
 	position:absolute;
-	top:650px;
-	left:280px;
+	top:600px;
+	left:250px;
+	width:530px;
 }
 .weather_condition_value{
+	position:relative;
 	float:left;
 	margin-left:15px;
-	margin-top:15px;
+	margin-top:5px;
 }
 #focuser{
 	position:absolute;
