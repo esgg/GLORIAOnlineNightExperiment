@@ -18,18 +18,23 @@ function InitDevices(GloriaAPI, $scope){
 			$("#load_init").remove();
 		}, function(dataError, statusError){
 			if(statusError == 401){
+				$("#init_image").remove();
 				$("#loading_message").text("Sign in the system");		
 			} else if (statusError == 404){
+				$("#init_image").remove();
 				$("#loading_message").text("No reservation id specified");
+			} else if (statusError == 0){
+				$("#init_image").remove();
+				$("#loading_message").text("No communication with the server");
 			} else {
-				alert("Unknown Error:"+statusError);
+				alert("Unknown Error:"+statusError+";"+dataError);
 			}
 
 		});
 		GloriaAPI.executeOperation($scope.reservation,'get_ccd_attributes', function(success){
 			
 		}, function(error){
-			alert(error);
+			//alert(error);
 		});
 		GloriaAPI.getImagesByContext($scope.reservation,function(success){
 			 $.each(success, function(i, image){ //Iterate among all images generate previously
@@ -76,13 +81,20 @@ function InitDevices(GloriaAPI, $scope){
 
 		});
 	});
+ 
 }
 
 function GetFilters(GloriaAPI, $scope, cid){
 	GloriaAPI.getParameterValue(cid, 'fw', function(success){
 		$scope.filters_0 = success.filters;
+		$scope.filter = success.filters[0];
+		GloriaAPI.setParameterTreeValue($scope.reservation,'fw','selected',$scope.filter,function(success){
+			
+		}, function(error){
+			
+		});
 	}, function(error){
-		alert(error);
+		//alert(error);
 	});
 	
 }
@@ -273,7 +285,7 @@ function CcdDevice(GloriaAPI, Sequence, $scope, $timeout){
 
 		if (!isNaN($scope.exposure_time) && ($scope.exposure_time>0) && ($scope.exposure_time<=120)){
 			$("#expose_0_button").attr("disabled",true);
-			/*$("#loading").css("visibility","visible");*/
+			$("#loading").css("visibility","visible");
 			$("#ccd_status").addClass("mess-info");
 			$scope.status_main_ccd = "EXPOSING";
 			num_ccd_timer=max_ccd_timer;
@@ -335,6 +347,7 @@ function exposureTimer(GloriaAPI, data, $timeout){
 						$("#main_image_container").css("margin-left",shift);
 						$("#loading").css("visibility","hidden");
 						$("#expose_0_button").removeAttr("disabled");
+						
 					});
 				};
 				data.status_main_ccd = "IMAGE TAKEN";
@@ -342,8 +355,6 @@ function exposureTimer(GloriaAPI, data, $timeout){
 				var htmlCode = "<a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\" style=\"width:235px\">";
 				htmlCode = htmlCode + "<img src=\""+mImage.src+"\"/></a>";
 				$(htmlCode).appendTo("#foo2");
-				//$("<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/>").appendTo("#foo2");
-				//$(" <a rel=\"prettyPhoto[caroufredsel]\" href=\""+mImage.src+"\"<img src=\""+mImage.src+"\" height=\"80px\" width=\"80px\"/></a>").appendTo("#foo2");
 				numImages++;
 				if (numImages>4){
 					$("#foo2").carouFredSel({
