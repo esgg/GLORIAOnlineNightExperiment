@@ -74,11 +74,19 @@ $(function() {
 	//ResourceBundle rb =  ResourceBundle.getBundle("content.mount.Language");
 %>
   
+
+ 
 <div id="load_init" style="background-color:#000000;opacity:0.8;height:100%;width:100%;position:absolute;z-index:700">
-	<div style="font-size:30px;width:100%;height:100px;text-align:center;margin-top:300px;color:#FFFFFF">
-		<img src="<%=request.getContextPath()%>/images/init_loading.gif" /><span id="loading_message">Loading...</span>
-	</div>
+<div style="font-size:30px;width:100%;height:100px;text-align:center;margin-top:300px;color:#FFFFFF">
+	<img id="init_image" src="<%=request.getContextPath()%>/images/init_loading.gif" height="15px" width="128px" margin-top:300px;color:#FFFFFF/><span id="loading_message">&nbsp;</span>
 </div>
+</div>
+
+<!-- 
+<div id="loading" style="font-size:30px;width:100%;height:100px;text-align:center;">
+	<img src="<%=request.getContextPath()%>/images/init_loading.gif" height="15px" width="128px"/>
+</div>
+ -->
 
 <div id="container" ng-app="gloria" ng-controller="InitDevices" style="background-color:#000000;">
 	
@@ -177,7 +185,7 @@ $(function() {
 							</tr>
 							<tr>
 								<td><span class="regular">BINNING:</span></td>
-								<td><select id="binning_selector" class="selector" ng-model="binning"><option>1x1</option></select></td>
+								<td><select id="binning_selector" class="selector" ng-model="binning" ng-init="binning='1x1'"><option>1x1</option></select></td>
 							</tr>
 						</table>
 					</div>
@@ -194,17 +202,17 @@ $(function() {
 		<div id="focus_marker">
 			<div id="focus_marker_info">0</div>
 		</div>
-		 
+		 <div style="width:500px;position:absolute;top:80px;left:270px;">
 		<div id="main_image">
-			<div id="loading" class="alert" style="width:100px;text-align:center;position:absolute;top:300px;left:450px;visibility:hidden">
-				<img src="<%=request.getContextPath()%>/images/loading.gif" width="32px" height="32px"/> Loading
+			<div id="loading" style="text-align:center;position:absolute;top:210px;left:125px;visibility:hidden">
+				<img src="<%=request.getContextPath()%>/images/init_loading.gif" width="256px" height="30px"/> 
 			</div>
-			<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"/>
+			
 			<div id="main_image_container" style="margin-left:0px;">
-				
+				<img id="image_0" src="<%=request.getContextPath()%>/images/nebulosa_tarantula.jpeg"/>	
 			</div> 
 		</div>
-		 
+		 </div>
 		<div id="ccd_button_1" class="ccd_button" style="position:absolute;top:525px;left:250px;" ng-controller="CcdDevice" ng-click="setOrder(1)">
 			CCD1
 		</div>
@@ -288,6 +296,7 @@ $(function() {
 		<a class="next" id="foo1_next" href="#"><span>next</span></a> 
 	</div>
 </div>
+
 <script>
 /*
 $(function() {
@@ -451,17 +460,19 @@ $("#ccd_alert").tooltip({
 	}
 });
 
-/*
+
 $("#ccd_button_0").click(function(){
 	$("#ccd_button_0").attr("class", "ccd_button_selected");
 	$("#ccd_button_1").attr("class", "ccd_button");
-	$("filter_selector").removeAttr("disabled");
+	$("#filter_selector").removeAttr("disabled");
 	setOrder(0);
 });
 $("#ccd_button_1").click(function(){
 	$("#ccd_button_1").attr("class", "ccd_button_selected");
 	$("#ccd_button_0").attr("class", "ccd_button");
-	$("filter_selector").attr("disabled",true);
+	$("#filter_selector").attr("disabled",true);
 	setOrder(1);
-});*/
+});
+
+$("#binning_selector").prop("selectedIndex",1);
 </script>
