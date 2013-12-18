@@ -50,21 +50,6 @@
 <script
  src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular-resource.min.js"></script>
 
-<!-- 
-<script>
-$(function() {
-	var availableTags = new Array();
-	
-	for (var i=0;i<110;i++){
-		availableTags[i] = "M"+(i+1);
-	}
-	
-	$( "#tags" ).autocomplete({
-	source: availableTags
-	});
-});
-</script>
- -->
 <%
 	ThemeDisplay themeDisplay = (ThemeDisplay) request
 			.getAttribute(WebKeys.THEME_DISPLAY);
@@ -81,12 +66,6 @@ $(function() {
 	<img id="init_image" src="<%=request.getContextPath()%>/images/init_loading.gif" height="15px" width="128px" margin-top:300px;color:#FFFFFF/><span id="loading_message">&nbsp;</span>
 </div>
 </div>
-
-<!-- 
-<div id="loading" style="font-size:30px;width:100%;height:100px;text-align:center;">
-	<img src="<%=request.getContextPath()%>/images/init_loading.gif" height="15px" width="128px"/>
-</div>
- -->
 
 <div id="container" ng-app="gloria" ng-controller="InitDevices" style="background-color:#000000;">
 	
@@ -131,16 +110,6 @@ $(function() {
 							<td></td>
 						</tr>						
 					</table>
-				<!-- 	<div>
-						<img src="<%=request.getContextPath()%>/images/hand_arrow_top.png" height="32px" width="32px"/>
-					</div>
-					<div>
-						<img src="<%=request.getContextPath()%>/images/hand_arrow_left.png" height="32px" width="32px"/>
-						<img src="<%=request.getContextPath()%>/images/hand_arrow_right.png" height="32px" width="32px"/>
-					</div>
-					<div>
-						<img src="<%=request.getContextPath()%>/images/hand_arrow_down.png" height="32px" width="32px"/>
-					</div> -->
 				</div>
 				<div id="mount_target_parameters">
 					<span class="title">MOUNT</span>
@@ -465,13 +434,13 @@ $("#ccd_button_0").click(function(){
 	$("#ccd_button_0").attr("class", "ccd_button_selected");
 	$("#ccd_button_1").attr("class", "ccd_button");
 	$("#filter_selector").removeAttr("disabled");
-	setOrder(0);
+	//setOrder(0);
 });
 $("#ccd_button_1").click(function(){
 	$("#ccd_button_1").attr("class", "ccd_button_selected");
 	$("#ccd_button_0").attr("class", "ccd_button");
 	$("#filter_selector").attr("disabled",true);
-	setOrder(1);
+	//setOrder(1);
 });
 
 $("#binning_selector").prop("selectedIndex",1);

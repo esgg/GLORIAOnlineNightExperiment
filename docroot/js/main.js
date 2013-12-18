@@ -332,7 +332,7 @@ function exposureTimer(GloriaAPI, data, $timeout){
 	data.status_main_ccd = "TRANSFERING";
 	GloriaAPI.executeOperation(data.reservation,'load_image_urls',function(success){
 		GloriaAPI.getParameterTreeValue(data.reservation,'cameras','ccd.images.['+ccdOrder+'].inst',function(success){
-			if (success.jpg!=null){
+			if ((success.jpg!=null) && (success.fits)!=null){
 		
 				console.log("Deleting timer");
 				//clearInterval(expTimer);
